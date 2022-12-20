@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  api:
+    #image: 'maat-tcs-houses-1.0.jar'
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - pgcontainer
+ #       condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pgcontainer:5432/Maat?useSSL=false
+      - SPRING_DATASOURCE_USERNAME=maat
+      - SPRING_DATASOURCE_PASSWORD=maat22
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  pgcontainer:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=maat22
+      - POSTGRES_USER=maat
+      - POSTGRES_DB=Maat
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U maat"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+
+  pgadmin:
+    container_name: dbui
+    image: dpage/pgadmin4
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-maat@maat.dev}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+    volumes:
+      - ./dockerPgAdmin/servers.json:/pgadmin4/servers.json
+      - ./dockerPgAdmin/pgpass:/pgpass
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      - pgcontainer

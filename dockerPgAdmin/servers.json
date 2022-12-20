@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Maat 2.0",
+      "Group": "Docker group",
+      "Host": "host.docker.internal",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "maat",
+      "PassFile": "/pgpass",
+      "SSLMode": "prefer"
+    }
+  }
+}
